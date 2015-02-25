@@ -2,28 +2,13 @@
 FROM dit4c/dit4c-container-ipython
 MAINTAINER t.dettrick@uq.edu.au
 
-ENV PETSC_VERSION 3.1-p8
-ENV HDF5_VERSION 1.8.14
-ENV UNDERWORLD_VERSION 1.7.0
+ENV PETSC_VERSION 3.5.3
 
-RUN yum install -y libxml2-devel openmpi-devel libpng-devel hostname
-
-#RUN ln -s /usr/lib64/openmpi/bin/mpicc /usr/local/bin
-
-# Install HDF5
-RUN cd /tmp && \
-    wget -nv "ftp://ftp.hdfgroup.org/HDF5/current/src/hdf5-$HDF5_VERSION.tar.gz" && \
-    tar xzf hdf5-$HDF5_VERSION.tar.gz && \
-    cd hdf5-$HDF5_VERSION && \
-    ./configure --help && \
-    export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH && \
-    CC=/usr/lib64/openmpi/bin/mpicc CFLAGS=-fPIC ./configure --prefix=/usr/local/hdf5 && \
-    make && \
-    make check && \
-    make install && \
-    make check-install && \
-    cd /tmp && \
-    rm -r hdf5-$HDF5_VERSION
+RUN yum install -y \
+  mercurial \
+  libxml2-devel libpng-devel \
+  openmpi-devel hdf5-openmpi-static \
+  hostname time
 
 # Install PETSc
 RUN cd /tmp && \
@@ -31,36 +16,34 @@ RUN cd /tmp && \
     tar xzf petsc-lite-$PETSC_VERSION.tar.gz && \
     cd petsc-$PETSC_VERSION && \
     export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH && \
-    ./configure --prefix=/usr/local/petsc --download-f-blas-lapack=1 --with-mpi-dir=/usr/lib64/openmpi --with-pic=1 && \
+    ./configure --prefix=/usr/local/petsc --download-fblaslapack --with-mpi-dir=/usr/lib64/openmpi --with-pic=1 && \
     make all test && \
     make install && \
     cd /tmp && \
     rm -r petsc-$PETSC_VERSION
 
-RUN cd /tmp && \
-    wget -nv "http://underworldproject.org/downloads/underworld-$UNDERWORLD_VERSION/underworld-$UNDERWORLD_VERSION.tar.gz"
+RUN hg clone https://bitbucket.org/underworldproject/underworld2 /tmp/underworld
 
-# Need X11 for gLucifer to compile
-RUN yum install -y mercurial freeglut-devel
+# Needed to coax gLucifer into compiling
+RUN yum install -y freeglut-devel
 
-# Sadly Underworld doesn't actually build correctly from the release, so we have
-# to update gLucifer to the latest 1.7.x
-RUN cd /usr/local && \
-    tar xzf /tmp/underworld-$UNDERWORLD_VERSION.tar.gz && \
-    cd Underworld-$UNDERWORLD_VERSION && \
-    rm /tmp/underworld-$UNDERWORLD_VERSION.tar.gz && \
-    chown -R root:root . && \
+COPY /etc /etc
+
+#RUN rpm --import /etc/RPM-GPG-KEY.atrpms && \
+#    rpm -Uvh http://dl.atrpms.net/all/atrpms-repo-7-7.el7.x86_64.rpm && \
+#    yum install -y ffmpeg-devel
+
+# Compile Underworld & gLucifer
+# Note: CFLAGS isn't required - it just squelches the enormous number of compile
+# warnings which would otherwise clutter the build log.
+RUN cd /tmp/underworld/libUnderworld && \
     ./configure.py --help && \
-    cd gLucifer && \
-    hg checkout 1.7.x && \
-    hg pull --update && \
-    cd .. && \
     export PATH=$PATH:/usr/lib64/openmpi/bin && \
-    ./configure.py --with-debugging=0 --hdf5-dir=/usr/local/hdf5 --petsc-dir=/usr/local/petsc && \
+    export PETSC_ARCH=linux-gnu && \
+    export PETSC_DIR=/usr/local/petsc && \
+    export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH && \
+    source /opt/python/bin/activate && \
+    ./configure.py --prefix=/usr/local --cflags="-w" --with-debugging=0 --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
     ./scons.py && \
     ./scons.py check && \
     ./scons.py install
-
-RUN ln -s /usr/local/Underworld-$UNDERWORLD_VERSION /usr/local/underworld
-
-COPY /etc /etc
