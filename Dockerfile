@@ -8,7 +8,11 @@ RUN yum install -y \
   mercurial \
   libxml2-devel libpng-devel \
   openmpi-devel hdf5-openmpi-static \
-  hostname time
+  hostname time \
+  gdal-devel
+
+# Add extra geo-related python packages for teaching
+RUN /opt/python/bin/pip install shapely fiona geopandas
 
 # Install PETSc
 RUN cd /tmp && \
@@ -29,6 +33,7 @@ RUN yum install -y freeglut-devel
 
 COPY /etc /etc
 
+## Disabled until a more modern version of ffmpeg is supported by Underworld
 #RUN rpm --import /etc/RPM-GPG-KEY.atrpms && \
 #    rpm -Uvh http://dl.atrpms.net/all/atrpms-repo-7-7.el7.x86_64.rpm && \
 #    yum install -y ffmpeg-devel
