@@ -9,7 +9,8 @@ RUN yum install -y \
   libxml2-devel libpng-devel \
   openmpi-devel hdf5-openmpi-static \
   hostname time \
-  gdal-devel
+  gdal-devel \
+  mesa-libOSMesa-devel.x86_64 freeglut-devel libX11-devel
 
 # Add extra geo-related python packages for teaching
 RUN /opt/python/bin/pip install shapely fiona geopandas
@@ -26,10 +27,7 @@ RUN cd /tmp && \
     cd /tmp && \
     rm -r petsc-$PETSC_VERSION
 
-RUN hg clone https://bitbucket.org/underworldproject/underworld2 /tmp/underworld
-
-# Needed to coax gLucifer into compiling
-RUN yum install -y freeglut-devel
+RUN hg clone https://bitbucket.org/underworldproject/underworld2 /opt/underworld
 
 COPY /etc /etc
 
@@ -48,7 +46,7 @@ RUN cd /tmp/underworld/libUnderworld && \
     export PETSC_DIR=/usr/local/petsc && \
     export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH && \
     source /opt/python/bin/activate && \
-    ./configure.py --prefix=/usr/local --cflags="-w" --with-debugging=0 --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
+    ./configure.py --prefix=/usr/local --cc=/usr/lib64/openmpi/bin/mpicc --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
     ./scons.py && \
     ./scons.py check && \
     ./scons.py install
