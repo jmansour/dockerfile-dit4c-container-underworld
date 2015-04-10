@@ -39,7 +39,7 @@ COPY /etc /etc
 # Compile Underworld & gLucifer
 # Note: CFLAGS isn't required - it just squelches the enormous number of compile
 # warnings which would otherwise clutter the build log.
-RUN cd /tmp/underworld/libUnderworld && \
+RUN cd /opt/underworld/libUnderworld && \
     ./configure.py --help && \
     export PATH=$PATH:/usr/lib64/openmpi/bin && \
     export PETSC_ARCH=linux-gnu && \
