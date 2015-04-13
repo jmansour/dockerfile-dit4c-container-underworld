@@ -46,7 +46,7 @@ RUN cd /opt/underworld/libUnderworld && \
     export PETSC_DIR=/usr/local/petsc && \
     export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH && \
     source /opt/python/bin/activate && \
-    ./configure.py --prefix=/usr/local --cc=/usr/lib64/openmpi/bin/mpicc --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
+    ./configure.py --cc=/usr/lib64/openmpi/bin/mpicc --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
     ./scons.py && \
     ./scons.py check && \
-    ./scons.py install
+    rm /opt/underworld/libUnderworld/build/bin/gLucifer
