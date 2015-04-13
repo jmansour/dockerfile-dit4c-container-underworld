@@ -10,7 +10,7 @@ RUN yum install -y \
   openmpi-devel hdf5-openmpi-static \
   hostname time \
   gdal-devel \
-  mesa-libOSMesa-devel.x86_64 freeglut-devel libX11-devel
+  mesa-libOSMesa-devel mesa-libGLU-devel libX11-devel
 
 # Add extra geo-related python packages for teaching
 RUN /opt/python/bin/pip install shapely fiona geopandas
