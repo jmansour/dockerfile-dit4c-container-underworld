@@ -10,6 +10,7 @@ RUN yum install -y \
   openmpi-devel hdf5-openmpi-static \
   hostname time \
   gdal-devel \
+  geos-devel \
   mesa-libOSMesa-devel mesa-libGLU-devel libX11-devel
 
 # Add extra geo-related python packages for teaching
