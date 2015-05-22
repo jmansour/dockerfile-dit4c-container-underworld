@@ -15,6 +15,10 @@ RUN yum install -y \
 # Add extra geo-related python packages for teaching
 RUN su researcher -c "/opt/python/bin/pip install PIL shapely fiona geopandas basemap cartopy rasterio obspy"
 
+RUN yum install -y udunits2 grib_api && \
+  su researcher -c "/opt/python/bin/pip install biggus pyke cdat-lite==6.0rc2" && \
+  su researcher -c "/opt/python/bin/pip install https://github.com/SciTools/iris/archive/v1.7.4.tar.gz"
+
 # Install PETSc
 RUN cd /tmp && \
     wget -nv "http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-$PETSC_VERSION.tar.gz" && \
