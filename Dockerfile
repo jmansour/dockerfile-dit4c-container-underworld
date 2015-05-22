@@ -13,7 +13,7 @@ RUN yum install -y \
   mesa-libOSMesa-devel mesa-libGLU-devel libX11-devel
 
 # Add extra geo-related python packages for teaching
-RUN su researcher -c "/opt/python/bin/pip install PIL shapely fiona geopandas basemap cartopy rasterio obspy iris"
+RUN su researcher -c "/opt/python/bin/pip install PIL shapely fiona geopandas basemap cartopy rasterio obspy"
 
 # Install PETSc
 RUN cd /tmp && \
