@@ -53,5 +53,4 @@ RUN cd /opt/underworld/libUnderworld && \
     source /opt/python/bin/activate && \
     ./configure.py --cxx=/usr/lib64/openmpi/bin/mpicxx --cc=/usr/lib64/openmpi/bin/mpicc --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
     ./scons.py && \
-    ./scons.py check && \
     (rm /opt/underworld/libUnderworld/build/bin/LavaVu || true)
