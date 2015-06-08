@@ -32,7 +32,7 @@ RUN cd /tmp && \
     cd /tmp && \
     rm -r petsc-$PETSC_VERSION
 
-RUN hg clone https://bitbucket.org/underworldproject/underworld2 /opt/underworld
+RUN hg clone -b newInterface https://bitbucket.org/underworldproject/underworld2 /opt/underworld
 
 COPY /etc /etc
 
@@ -51,7 +51,7 @@ RUN cd /opt/underworld/libUnderworld && \
     export PETSC_DIR=/usr/local/petsc && \
     export LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH && \
     source /opt/python/bin/activate && \
-    ./configure.py --cc=/usr/lib64/openmpi/bin/mpicc --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
+    ./configure.py --cxx=/usr/lib64/openmpi/bin/mpicxx --cc=/usr/lib64/openmpi/bin/mpicc --mpi-lib-dir=/usr/lib64/openmpi/lib --mpi-inc-dir=/usr/include/openmpi-x86_64 && \
     ./scons.py && \
     ./scons.py check && \
-    (rm /opt/underworld/libUnderworld/build/bin/gLucifer || true)
+    (rm /opt/underworld/libUnderworld/build/bin/LavaVu || true)
