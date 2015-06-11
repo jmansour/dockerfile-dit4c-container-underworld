@@ -14,7 +14,7 @@ RUN yum install -y \
 
 # Add extra geo-related python packages for teaching
 RUN su researcher -c "CPLUS_INCLUDE_PATH=/usr/include/gdal C_INCLUDE_PATH=/usr/include/gdal \
-  /opt/python/bin/pip install PIL shapely fiona geopandas basemap cartopy rasterio obspy gdal"
+  /opt/python/bin/pip install PIL shapely fiona geopandas basemap cartopy rasterio obspy gdal functools32"
 
 RUN yum install -y udunits2 grib_api && \
   su researcher -c "/opt/python/bin/pip install biggus pyke cdat-lite==6.0rc2" && \
